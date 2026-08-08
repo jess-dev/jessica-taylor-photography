@@ -1,0 +1,128 @@
+---
+import { getImage } from 'astro:assets';
+import type { Photo } from '../lib/gallery';
+
+interface Props {
+  desktop: Photo;
+  /** Portrait frame served to phones. Not a crop — a different photograph. */
+  mobile?: Photo;
+  /** object-position for the desktop crop, e.g. '35% 40%'. */
+  focal?: string;
+  eyebrow?: string;
+  headline: string;
+  alt: string;
+}
+
+const { desktop, mobile, focal = '50% 50%', eyebrow, headline, alt } = Astro.props;
+
+const FORMATS = ['avif', 'webp'] as const;
+const DESKTOP_W = [1280, 1920, 2560, 3200];
+const MOBILE_W = [640, 828, 1080, 1290];
+
+async function srcset(photo: Photo, widths: number[], format: (typeof FORMATS)[number]) {
+  const usable = widths.filter((w) => w <= photo.image.width);
+  if (!usable.length) usable.push(photo.image.width);
+
+  const built = await Promise.all(
+    usable.map((width) => getImage({ src: photo.image, width, format })),
+  );
+  return built.map((img, i) => `${img.src} ${usable[i]}w`).join(', ');
+}
+
+const desktopSets = await Promise.all(
+  FORMATS.map(async (f) => ({ format: f, set: await srcset(desktop, DESKTOP_W, f) })),
+);
+const mobileSets = mobile
+  ? await Promise.all(
+      FORMATS.map(async (f) => ({ format: f, set: await srcset(mobile, MOBILE_W, f) })),
+    )
+  : [];
+
+// Fallback for browsers that take neither AVIF nor WebP.
+const fallback = await getImage({
+  src: desktop.image,
+  width: Math.min(1920, desktop.image.width),
+  format: 'jpeg',
+});
+
+// Mobile container matches the portrait source exactly, so nothing is cropped.
+const mobileRatio = mobile ? `${mobile.image.width} / ${mobile.image.height}` : '3 / 2';
+---
+
+<section class="hero">
+  <div class="hero-media" style={`--focal: ${focal}; --mobile-ratio: ${mobileRatio};`}>
+    <picture>
+      {
+        mobileSets.map((s) => (
+          <source media="(max-width: 40rem)" type={`image/${s.format}`} srcset={s.set} sizes="100vw" />
+        ))
+      }
+      {desktopSets.map((s) => <source type={`image/${s.format}`} srcset={s.set} sizes="100vw" />)}
+      <img
+        src={fallback.src}
+        width={desktop.image.width}
+        height={desktop.image.height}
+        alt={alt}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+  </div>
+
+  <div class="hero-copy">
+    <div class="wrap">
+      {eyebrow && <p class="label">{eyebrow}</p>}
+      <h1 class="display">{headline}</h1>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; isolation: isolate; }
+
+  .hero-media {
+    position: relative;
+    height: min(100svh, 940px);
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
+
+  /* Keeps the overlaid type legible whatever the photograph does underneath. */
+  .hero-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(11, 11, 12, 0.88) 0%, rgba(11, 11, 12, 0.35) 32%, rgba(11, 11, 12, 0) 62%),
+      linear-gradient(to bottom, rgba(11, 11, 12, 0.5) 0%, rgba(11, 11, 12, 0) 28%);
+  }
+
+  .hero-copy {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 2;
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
+  }
+  .hero-copy .display {
+    font-size: clamp(2.4rem, 7.2vw, 6.5rem);
+    max-width: 18ch;
+  }
+  .hero-copy :global(.label) { margin-bottom: 1rem; }
+
+  /* A portrait frame is served here, so the hero stays tall and keeps its
+     overlaid copy. The container matches the source ratio — never cropped. */
+  @media (max-width: 40rem) {
+    .hero-media {
+      height: auto;
+      aspect-ratio: var(--mobile-ratio);
+    }
+    .hero-media :global(img) { object-fit: contain; }
+    .hero-copy { padding-bottom: clamp(1.5rem, 5vw, 2.5rem); }
+    .hero-copy .display { font-size: clamp(2.1rem, 10vw, 3rem); }
+  }
+</style>

@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../site.config';
+---
+
+<Base
+  title="Contact"
+  description={`Enquiries for match days, meets, gigs and events across ${site.location.region}.`}
+>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="label">Enquiries</p>
+      <h1 class="display">Get in touch</h1>
+      <p>
+        Match days, athletics meets, gigs and events across {site.location.city} and the
+        {' '}{site.location.region}. Tell me the date and what you need and I'll come back
+        with availability and a price.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap contact-layout">
+    <ContactForm />
+
+    <aside>
+      <div class="aside-block">
+        <p class="label">Email direct</p>
+        <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+      </div>
+      <div class="aside-block">
+        <p class="label">Elsewhere</p>
+        <p>
+          {site.socials.map((s) => (
+            <>
+              <a href={s.href} rel="me noopener">{s.label}</a>
+              <br />
+            </>
+          ))}
+        </p>
+      </div>
+      <div class="aside-block">
+        <p class="label">Based in</p>
+        <p>{site.location.city} — travelling across the {site.location.region}.</p>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .page-head {
+    padding-top: clamp(4.5rem, 8vw, 6.5rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .page-head :global(.display) { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+  .page-head p { max-width: 52ch; color: var(--muted); margin: 1.5rem 0 0; }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: clamp(2.5rem, 7vw, 6rem);
+    align-items: start;
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  @media (max-width: 52rem) {
+    .contact-layout { grid-template-columns: 1fr; }
+  }
+
+  .aside-block { margin-bottom: clamp(2rem, 4vw, 3rem); }
+  .aside-block :global(.label) { margin-bottom: 0.6rem; }
+  .aside-block p { margin: 0; }
+  .aside-block a { border-bottom: 1px solid var(--line); }
+  .aside-block a:hover { border-bottom-color: var(--fg); }
+</style>

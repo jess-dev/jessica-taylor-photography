@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../site.config';
+import { findPhoto } from '../lib/gallery';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Built URL of a share image. Defaults to a card cut from the hero. */
+  image?: string;
+  profile?: boolean;
+  /** True on pages whose first element is a full-bleed hero. */
+  overlayHeader?: boolean;
+}
+
+const { title, description, image, profile, overlayHeader = false } = Astro.props;
+
+/**
+ * Social cards want 1200×630 and reliable format support, so this is a real
+ * cropped JPEG rather than the responsive AVIF the page itself serves.
+ */
+const heroPhoto = findPhoto(site.hero.desktop);
+const ogDefault = heroPhoto
+  ? (
+      await getImage({
+        src: heroPhoto.image,
+        width: 1200,
+        height: 630,
+        fit: 'cover',
+        // sharp wants a gravity keyword here, not the CSS percentage in
+        // site.hero.focal. Cropping 3:2 to 1.9:1 only trims top and bottom, so
+        // centre loses nothing the focal point was protecting.
+        position: 'centre',
+        format: 'jpeg',
+      })
+    ).src
+  : undefined;
+
+const shareImage = image ?? ogDefault;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO {title} {description} image={shareImage} {profile} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header overlay={overlayHeader} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jessica Taylor Photography — mockup</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<p class="mockup-note">Design mockup — all wording is placeholder. Judge the layout, crop, pacing and palette.</p>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="index.html">
+      Jessica Taylor
+      <span>Photography</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="gallery.html">Work</a>
+      <a href="#about">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Hero. Focal point sits on the header; the full width of the frame is the
+       picture, so on mobile the hero loses height rather than width. -->
+  <section class="hero">
+    <div class="hero-media" style="--focal: 35% 40%">
+      <!-- Art direction: a portrait frame fills a phone properly; the wide
+           corner-kick frame owns the desktop. Not a crop of one image — two
+           different photographs, each chosen for its shape. -->
+      <picture>
+        <source media="(max-width: 40rem)" srcset="../_source-photos/BristolRun-8.jpg">
+        <img src="../_source-photos/CheddarVsBath22ndFeb-12.jpg"
+             alt="A player rises to meet the ball at a corner as defenders and the goalkeeper converge on the six-yard box">
+      </picture>
+    </div>
+    <div class="hero-copy">
+      <div class="wrap">
+        <p class="label">Sports photography — Bristol</p>
+        <h1 class="display">The whole picture.</h1>
+      </div>
+    </div>
+  </section>
+
+  <!-- Short, load-bearing prose: the main SEO signal now the homepage is quiet. -->
+  <section class="intro">
+    <div class="wrap intro-grid">
+      <p class="label">Placeholder copy</p>
+      <p>
+        Jessica Taylor is a sports and live music photographer based in Bristol,
+        covering grassroots football, athletics and gigs across the South West.
+        Available for match days, meets and events.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Selected work</h2>
+        <a class="link-out" href="gallery.html">All galleries</a>
+      </div>
+
+      <div class="rows">
+        <!-- The wide Cheddar frame leads, full width, then three across. With a
+             library that is mostly 5:4, variety comes from how many frames sit
+             in a row rather than from unequal widths. -->
+        <div class="row">
+          <figure style="--w: 1.25">
+            <div class="shot" style="--ar: 5 / 4"><img src="../_source-photos/CheddarVsBath22ndFeb-45.jpg" alt="Placeholder"></div>
+            <figcaption><span>Cheddar vs Bath — 22 February</span><span>01</span></figcaption>
+          </figure>
+        </div>
+
+        <div class="row">
+          <figure style="--w: 1.25">
+            <div class="shot" style="--ar: 5 / 4"><img src="../_source-photos/Worlds25thApr-35.jpg" alt="Placeholder"></div>
+            <figcaption><span>Worlds — 25 April</span><span>02</span></figcaption>
+          </figure>
+          <figure style="--w: 1.25">
+            <div class="shot" style="--ar: 5 / 4"><img src="../_source-photos/DSC01819.jpg" alt="Placeholder"></div>
+            <figcaption><span>Untitled — 13 December</span><span>03</span></figcaption>
+          </figure>
+          <figure style="--w: 1.25">
+            <div class="shot" style="--ar: 5 / 4"><img src="../_source-photos/BristolRun-2.jpg" alt="Placeholder"></div>
+            <figcaption><span>Bristol Run — 10 May</span><span>04</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Galleries</h2>
+      </div>
+      <div class="genres">
+        <a class="genre" href="gallery.html">
+          <img src="../_source-photos/CheddarVsBath22ndFeb-12.jpg" alt="">
+          <span class="genre-label">
+            <strong>Sport</strong>
+            <span>Football, athletics — 2025/26</span>
+          </span>
+        </a>
+        <a class="genre" href="gallery.html">
+          <img src="../_source-photos/Worlds17thJan-25.jpg" alt="">
+          <span class="genre-label">
+            <strong>Gigs</strong>
+            <span>Live music</span>
+          </span>
+        </a>
+        <span class="genre soon">
+          <img src="../_source-photos/Bronzes31stJan-30.jpg" alt="">
+          <span class="genre-label">
+            <strong>Portraits</strong>
+            <span>Coming soon</span>
+          </span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="wrap footer-grid">
+    <div>
+      <p class="label" style="margin-bottom:.75rem">Enquiries</p>
+      <a href="#">hello@jessicataylorphotography.co.uk</a>
+      <p class="colophon" style="margin-top:1.5rem">Placeholder address — to be confirmed.</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.instagram.com/jessica_taylor.photography/">Instagram</a>
+      <a href="https://www.flickr.com/photos/203458112@N05/">Flickr — full match galleries</a>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:3rem">
+    <p class="colophon">© 2026 Jessica Taylor Photography</p>
+  </div>
+</footer>
+
+</body>
+</html>

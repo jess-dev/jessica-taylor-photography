@@ -1,0 +1,60 @@
+---
+import { site } from '../site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Absolute or site-relative URL of the social share image. */
+  image?: string;
+  /** Emit Person + ProfilePage JSON-LD. Homepage only. */
+  profile?: boolean;
+}
+
+const { title, description, image, profile = false } = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name} ${site.discipline}` : `${site.name} ${site.discipline}`;
+const desc = description ?? site.description;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+const ogImage = image ? new URL(image, Astro.site ?? site.url) : undefined;
+
+/**
+ * This is what makes "sports photographer Bristol" searches surface the site —
+ * it matters more than usual because the homepage carries very little prose.
+ */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: site.name,
+    jobTitle: 'Photographer',
+    description: site.description,
+    url: site.url,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.location.city,
+      addressRegion: site.location.region,
+      addressCountry: site.location.country,
+    },
+    sameAs: site.socials.filter((s) => s.sameAs).map((s) => s.href),
+  },
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={desc} />
+<link rel="canonical" href={canonical.href} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={`${site.name} ${site.discipline}`} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={desc} />
+<meta property="og:url" content={canonical.href} />
+{ogImage && <meta property="og:image" content={ogImage.href} />}
+
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={desc} />
+{ogImage && <meta name="twitter:image" content={ogImage.href} />}
+
+{profile && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

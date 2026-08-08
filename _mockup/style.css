@@ -1,0 +1,616 @@
+/* ==========================================================================
+   Jessica Taylor Photography — design mockup
+   Disposable. Standalone HTML/CSS, no build step. Ported to Astro at Step 3.
+   ========================================================================== */
+
+:root {
+  /* Near-black ground. The photographs are the only real colour on the page. */
+  --bg:        #0b0b0c;
+  --bg-raised: #141416;
+  --fg:        #f4f2ef;
+  --muted:     #948f89;
+  --line:      rgba(244, 242, 239, 0.14);
+
+  --font: "Helvetica Neue", Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+
+  --maxw: 1560px;
+  --gut:  clamp(1.25rem, 4vw, 4.5rem);
+  --gap:  clamp(0.75rem, 1.6vw, 1.75rem);
+
+  --t: 380ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.075rem);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;              /* page body never scrolls sideways */
+}
+
+img { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+/* Shared -------------------------------------------------------------------- */
+
+.wrap {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+/* Small wide-tracked label. Used for eyebrows, nav, captions. */
+.label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.display {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: var(--gut);
+  top: 0.75rem;
+  z-index: 100;
+  background: var(--fg);
+  color: var(--bg);
+  padding: 0.6rem 1rem;
+}
+
+/* Header -------------------------------------------------------------------- */
+
+.site-header {
+  position: absolute;             /* sits over the hero */
+  inset: 0 0 auto 0;
+  z-index: 20;
+  padding-block: clamp(1.1rem, 2.4vw, 2rem);
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.wordmark {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.wordmark span {
+  display: block;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  font-size: 0.62rem;
+}
+
+.nav {
+  display: flex;
+  gap: clamp(1.1rem, 2.6vw, 2.4rem);
+}
+.nav a {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-block: 0.35rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--t);
+}
+.nav a:hover,
+.nav a[aria-current] { border-bottom-color: var(--fg); }
+
+/* Hero ---------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Desktop: full-bleed, cropped to the viewport with a per-image focal point. */
+.hero-media {
+  position: relative;
+  height: min(100svh, 940px);
+}
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focal, 50% 50%);
+}
+
+/* Scrim: keeps the overlay type legible whatever the photo does underneath. */
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.35) 32%, rgba(11,11,12,0) 62%),
+    linear-gradient(to bottom, rgba(11,11,12,0.5) 0%, rgba(11,11,12,0) 28%);
+}
+
+.hero-copy {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  padding-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+.hero-copy .display {
+  font-size: clamp(2.4rem, 7.2vw, 6.5rem);
+  max-width: 18ch;
+}
+.hero-copy .label { margin-bottom: 1rem; }
+.hero-caption {
+  margin-top: 1.4rem;
+  max-width: 46ch;
+  color: var(--muted);
+}
+
+/* Mobile: a portrait frame is served instead (see the <picture> in the markup),
+   so the hero can stay tall and keep its overlaid copy. The container matches
+   the 4:5 source, so the photograph is never cropped — it simply fits. */
+@media (max-width: 40rem) {
+  .hero-media {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+  .hero-media img { object-fit: contain; }
+  .hero-copy { padding-bottom: clamp(1.5rem, 5vw, 2.5rem); }
+  .hero-copy .display { font-size: clamp(2.1rem, 10vw, 3rem); }
+}
+
+/* Statement ----------------------------------------------------------------- */
+
+.statement {
+  padding-block: clamp(4.5rem, 11vw, 10rem);
+  border-bottom: 1px solid var(--line);
+}
+.statement p {
+  font-size: clamp(1.35rem, 2.9vw, 2.35rem);
+  font-weight: 300;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  max-width: 24ch;
+  margin: 0;
+  text-wrap: balance;
+}
+.statement .label { margin-bottom: 1.75rem; }
+
+/* Intro ---------------------------------------------------------------------
+   Small and quiet, but it carries the "sports photographer Bristol" signal now
+   that the homepage headline is four words long. */
+
+.intro {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+  border-bottom: 1px solid var(--line);
+}
+.intro-grid {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) minmax(0, 3fr);
+  gap: clamp(1rem, 4vw, 3rem);
+  align-items: start;
+}
+.intro-grid p:last-child {
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  max-width: 60ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+.intro-grid .label { margin: 0.35rem 0 0; }
+
+@media (max-width: 40rem) {
+  .intro-grid { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+/* Editorial grid ------------------------------------------------------------ */
+
+.section { padding-block: clamp(3.5rem, 8vw, 7rem); }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+}
+.section-head h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.link-out {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.3rem;
+  transition: border-color var(--t), color var(--t);
+}
+.link-out:hover { border-bottom-color: var(--fg); color: var(--fg); }
+
+/* Justified rows.
+   Each figure's flex-grow is its aspect ratio, so widths come out proportional
+   to shape — which makes every height in a row resolve to the same value with
+   no cropping and no JavaScript. Set --w (decimal ratio) and --ar per photo. */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.row {
+  display: flex;
+  gap: var(--gap);
+}
+
+.row > figure {
+  flex: var(--w, 1) 1 0%;
+  min-width: 0;
+  margin: 0;
+}
+
+@media (max-width: 52rem) {
+  .row { flex-direction: column; }
+}
+
+.shot {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-raised);   /* holds the space while the photo decodes */
+  aspect-ratio: var(--ar, 3 / 2);
+}
+.shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--t), opacity var(--t);
+}
+
+button.shot {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--bg-raised);
+  cursor: zoom-in;
+  color: inherit;
+  font: inherit;
+}
+button.shot:hover img { transform: scale(1.018); }
+
+figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.85rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Full-bleed feature — the reason the site exists: room for a wide frame. */
+.bleed {
+  margin-block: clamp(3.5rem, 9vw, 8rem);
+}
+.bleed img {
+  width: 100%;
+  height: auto;
+}
+.bleed figcaption {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+  margin-top: 1rem;
+}
+
+/* Genre cards --------------------------------------------------------------- */
+
+.genres {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--gap);
+}
+
+.genre {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-raised);
+}
+.genre img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.62;
+  transition: opacity var(--t), transform var(--t);
+}
+.genre:hover img { opacity: 0.82; transform: scale(1.03); }
+
+.genre-label {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: clamp(1.1rem, 2.5vw, 1.75rem);
+  background: linear-gradient(to top, rgba(11,11,12,0.85), rgba(11,11,12,0));
+}
+.genre-label strong {
+  display: block;
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.genre-label span { font-size: 0.78rem; color: var(--muted); }
+
+.genre.soon { pointer-events: none; }
+.genre.soon img { opacity: 0.28; filter: grayscale(1); }
+
+/* Gallery intro ------------------------------------------------------------- */
+
+/* Just enough to clear the fixed header, no more. */
+.page-head {
+  padding-top: clamp(4.5rem, 8vw, 6.5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  border-bottom: 1px solid var(--line);
+}
+.page-head .display { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+.page-head p {
+  max-width: 52ch;
+  color: var(--muted);
+  margin: 1.5rem 0 0;
+}
+.page-head .link-out { display: inline-block; margin-top: 2rem; }
+
+/* On inner pages the header is not over a photo, so give it a ground. */
+body.inner .site-header { background: var(--bg); }
+
+/* Contact form --------------------------------------------------------------
+   Underlined fields rather than boxes: fewer lines on the page, consistent
+   with the rest of the chrome. Boxes would be the only hard rectangles here
+   that aren't photographs. */
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: clamp(2.5rem, 7vw, 6rem);
+  align-items: start;
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+@media (max-width: 52rem) {
+  .contact-layout { grid-template-columns: 1fr; }
+}
+
+.field {
+  position: relative;
+  margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.field label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font: inherit;
+  padding: 0.55rem 0;
+  border-radius: 0;                /* iOS rounds these by default */
+  transition: border-color var(--t);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 7rem;
+  line-height: 1.6;
+}
+
+.field select {
+  appearance: none;
+  cursor: pointer;
+  /* Chevron drawn inline so the mockup stays self-contained. */
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: right 0.75rem center, right 0.4rem center;
+  background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+  padding-right: 1.75rem;
+}
+.field select option { background: var(--bg-raised); color: var(--fg); }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--fg);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 3vw, 2rem);
+}
+@media (max-width: 32rem) {
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* Honeypot — bots fill it, humans never see it. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--fg);
+  color: var(--bg);
+  border: 1px solid var(--fg);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+}
+.submit:hover { background: transparent; color: var(--fg); }
+
+.form-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  max-width: 46ch;
+}
+
+.aside-block { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.aside-block .label { margin-bottom: 0.6rem; }
+.aside-block p { margin: 0; }
+.aside-block a { border-bottom: 1px solid var(--line); }
+.aside-block a:hover { border-bottom-color: var(--fg); }
+
+/* Footer -------------------------------------------------------------------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+  margin-top: clamp(3rem, 8vw, 7rem);
+}
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2.5rem;
+}
+.site-footer a { border-bottom: 1px solid var(--line); }
+.site-footer a:hover { border-bottom-color: var(--fg); }
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.78rem;
+}
+.colophon { font-size: 0.72rem; color: var(--muted); }
+
+/* Lightbox ------------------------------------------------------------------ */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  place-items: center;
+  background: rgba(6, 6, 7, 0.97);
+  padding: clamp(1rem, 4vw, 3rem);
+}
+.lightbox[open] { display: grid; }
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 82svh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.lb-meta {
+  position: absolute;
+  inset: auto 0 clamp(1rem, 3vw, 2rem) 0;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lb-btn {
+  position: absolute;
+  background: none;
+  border: 0;
+  color: var(--fg);
+  cursor: pointer;
+  padding: 1rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  opacity: 0.65;
+  transition: opacity var(--t);
+}
+.lb-btn:hover { opacity: 1; }
+.lb-close { top: clamp(0.5rem, 2vw, 1.5rem); right: clamp(0.5rem, 2vw, 1.5rem); }
+.lb-prev  { left:  clamp(0.25rem, 2vw, 1.5rem); top: 50%; transform: translateY(-50%); }
+.lb-next  { right: clamp(0.25rem, 2vw, 1.5rem); top: 50%; transform: translateY(-50%); }
+
+body.lb-open { overflow: hidden; }
+
+/* Mockup-only banner --------------------------------------------------------- */
+
+/* Pinned to the bottom of the viewport, out of normal flow — otherwise it
+   collides with the absolutely-positioned header. Mockup only; never ships. */
+.mockup-note {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 80;
+  margin: 0;
+  background: #1d1a12;
+  border-top: 1px solid rgba(244, 242, 239, 0.1);
+  color: #d9cfa8;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 0.6rem var(--gut);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

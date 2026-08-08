@@ -1,0 +1,100 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { galleryPhotos, findPhoto } from '../../lib/gallery';
+
+const galleries = (await getCollection('galleries')).sort((a, b) => a.data.order - b.data.order);
+
+const cards = galleries.map((gallery) => ({
+  gallery,
+  cover: findPhoto(`${gallery.id}/${gallery.data.cover}`),
+  count: galleryPhotos(gallery.id).length,
+}));
+---
+
+<Base title="Work" description="Galleries — sport, gigs and portraits.">
+  <section class="page-head">
+    <div class="wrap">
+      <p class="label">Galleries</p>
+      <h1 class="display">Work</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="genres">
+        {
+          cards.map(({ gallery, cover, count }) => {
+            const soon = gallery.data.draft || count === 0;
+            const Tag = soon ? 'span' : 'a';
+            return (
+              <Tag class:list={['genre', { soon }]} href={soon ? undefined : `/work/${gallery.id}`}>
+                {
+                  cover && (
+                    <Image
+                      src={cover.image}
+                      alt=""
+                      widths={[480, 768, 1024]}
+                      sizes="(max-width: 52rem) 100vw, 33vw"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )
+                }
+                <span class="genre-label">
+                  <strong>{gallery.data.title}</strong>
+                  <span>{soon ? 'Coming soon' : `${count} photographs`}</span>
+                </span>
+              </Tag>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-head {
+    padding-top: clamp(4.5rem, 8vw, 6.5rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .page-head :global(.display) { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+
+  .genres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+    gap: var(--gap);
+  }
+  .genre {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--bg-raised);
+  }
+  .genre img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.62;
+    transition: opacity var(--t), transform var(--t);
+  }
+  .genre:hover img { opacity: 0.82; transform: scale(1.03); }
+  .genre-label {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: clamp(1.1rem, 2.5vw, 1.75rem);
+    background: linear-gradient(to top, rgba(11, 11, 12, 0.85), rgba(11, 11, 12, 0));
+  }
+  .genre-label strong {
+    display: block;
+    font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+    font-weight: 600;
+  }
+  .genre-label span { font-size: 0.78rem; color: var(--muted); }
+  .genre.soon { pointer-events: none; }
+  .genre.soon img { opacity: 0.28; filter: grayscale(1); }
+</style>

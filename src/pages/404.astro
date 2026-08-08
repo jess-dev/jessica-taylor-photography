@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found" description="That page doesn't exist.">
+  <section class="notfound">
+    <div class="wrap">
+      <p class="label">404</p>
+      <h1 class="display">That page doesn't exist.</h1>
+      <p class="links">
+        <a class="link-out" href="/">Home</a>
+        <a class="link-out" href="/work">Work</a>
+        <a class="link-out" href="/contact">Contact</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    min-height: 70svh;
+    display: grid;
+    align-items: center;
+    padding-top: clamp(5rem, 10vw, 8rem);
+  }
+  .notfound :global(.display) { font-size: clamp(2rem, 5vw, 3.5rem); max-width: 16ch; }
+  .notfound :global(.label) { margin-bottom: 1rem; }
+  .links { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 2.5rem; }
+</style>

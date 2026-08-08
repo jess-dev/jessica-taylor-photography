@@ -1,0 +1,48 @@
+---
+import { site } from '../site.config';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <p class="label">Enquiries</p>
+      <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+    </div>
+    <div class="footer-links">
+      {site.socials.map((s) => <a href={s.href} rel="me noopener">{s.label}</a>)}
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="colophon">© {year} {site.name} {site.discipline}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    margin-top: clamp(3rem, 8vw, 7rem);
+  }
+  .footer-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+  .footer-grid p { margin: 0; }
+  .footer-grid .label { margin-bottom: 0.75rem; }
+  .site-footer a { border-bottom: 1px solid var(--line); }
+  .site-footer a:hover { border-bottom-color: var(--fg); }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.78rem;
+  }
+  .colophon {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 3rem;
+  }
+</style>

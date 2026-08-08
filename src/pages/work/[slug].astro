@@ -1,0 +1,71 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { galleryPhotos } from '../../lib/gallery';
+
+export const getStaticPaths = (async () => {
+  const galleries = await getCollection('galleries');
+
+  // Drafts, and galleries with no images yet, never build a page.
+  return galleries
+    .filter((gallery) => !gallery.data.draft && galleryPhotos(gallery.id).length > 0)
+    .map((gallery) => ({ params: { slug: gallery.id }, props: { gallery } }));
+}) satisfies GetStaticPaths;
+
+const { gallery } = Astro.props;
+const { Content } = await render(gallery);
+
+const photos = galleryPhotos(gallery.id);
+const meta = Object.fromEntries(
+  Object.entries(gallery.data.photos).map(([name, info]) => [
+    name,
+    { caption: info.caption, focal: info.focal },
+  ]),
+);
+---
+
+<Base title={gallery.data.title} description={gallery.data.blurb}>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="label">Gallery</p>
+      <h1 class="display">{gallery.data.title}</h1>
+      <p>{gallery.data.blurb}</p>
+      <div class="body"><Content /></div>
+      {
+        gallery.data.flickrUrl && (
+          <a class="link-out" href={gallery.data.flickrUrl} rel="noopener">
+            Full match galleries on Flickr →
+          </a>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <PhotoGrid photos={photos} meta={meta} lightbox numbered />
+    </div>
+  </section>
+
+  <Lightbox />
+</Base>
+
+<style>
+  /* Just enough to clear the header, no more. */
+  .page-head {
+    padding-top: clamp(4.5rem, 8vw, 6.5rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .page-head :global(.display) { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+  .page-head p {
+    max-width: 52ch;
+    color: var(--muted);
+    margin: 1.5rem 0 0;
+  }
+  .page-head :global(.link-out) { display: inline-block; margin-top: 2rem; }
+  .body :global(p) { max-width: 52ch; color: var(--muted); }
+</style>

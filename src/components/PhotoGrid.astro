@@ -1,0 +1,149 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import { packRows, type Photo } from '../lib/gallery';
+
+interface Props {
+  photos: Photo[];
+  /** Caption overrides and focal points, keyed by filename. */
+  meta?: Record<string, { caption?: string; focal?: string }>;
+  /** Wrap each photo in a button that opens the Lightbox. */
+  lightbox?: boolean;
+  /** Ratios sum per row — lower packs fewer, larger frames per row. */
+  target?: number;
+  /** Numbered captions, as on the gallery pages. */
+  numbered?: boolean;
+  /**
+   * How many leading photos load eagerly. Lazy-loading images that are already
+   * on screen just delays them — these are the ones the browser should fetch
+   * straight away. Roughly one row's worth.
+   */
+  eager?: number;
+}
+
+const {
+  photos,
+  meta = {},
+  lightbox = false,
+  target = 2.6,
+  numbered = false,
+  eager = 2,
+} = Astro.props;
+
+const rows = packRows(photos, target);
+
+// Full-size variant for the lightbox: generated once, reused by every viewer.
+const fullSizes = new Map<string, string>();
+for (const photo of photos) {
+  const img = await getImage({
+    src: photo.image,
+    width: Math.min(2400, photo.image.width),
+    format: 'webp',
+  });
+  fullSizes.set(photo.name, img.src);
+}
+
+let index = 0;
+---
+
+<div class="rows" data-gallery={lightbox ? '' : undefined}>
+  {
+    rows.map((row) => (
+      <div class="row">
+        {row.map((photo) => {
+          index += 1;
+          const info = meta[photo.name] ?? {};
+          const caption = info.caption ?? photo.name.replace(/\.[^.]+$/, '');
+          const Tag = lightbox ? 'button' : 'div';
+
+          return (
+            <figure style={`--w: ${photo.ratio.toFixed(4)}`}>
+              <Tag
+                class="shot"
+                type={lightbox ? 'button' : undefined}
+                style={`--ar: ${photo.image.width} / ${photo.image.height}`}
+                data-full={lightbox ? fullSizes.get(photo.name) : undefined}
+                data-caption={lightbox ? caption : undefined}
+              >
+                <Picture
+                  src={photo.image}
+                  alt={caption}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  widths={[480, 768, 1024, 1440]}
+                  sizes="(max-width: 52rem) 100vw, 50vw"
+                  loading={index <= eager ? 'eager' : 'lazy'}
+                  fetchpriority={index === 1 ? 'high' : undefined}
+                  decoding="async"
+                  style={info.focal ? `object-position: ${info.focal}` : undefined}
+                />
+              </Tag>
+              <figcaption>
+                <span>{caption}</span>
+                {numbered && <span>{String(index).padStart(2, '0')}</span>}
+              </figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  /* Justified rows: each figure's flex-grow is its aspect ratio, so widths come
+     out proportional to shape and every height in a row resolves to the same
+     value. Aligned rows, no cropping, no JavaScript. */
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  .row {
+    display: flex;
+    gap: var(--gap);
+  }
+
+  .row > figure {
+    flex: var(--w, 1) 1 0%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  @media (max-width: 52rem) {
+    .row { flex-direction: column; }
+  }
+
+  .shot {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg-raised);
+    aspect-ratio: var(--ar, 3 / 2);
+    padding: 0;
+    border: 0;
+    color: inherit;
+    font: inherit;
+  }
+  button.shot { cursor: zoom-in; }
+
+  .shot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--t);
+  }
+  button.shot:hover :global(img) { transform: scale(1.018); }
+
+  figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.85rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>

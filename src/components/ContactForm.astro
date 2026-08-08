@@ -1,0 +1,166 @@
+---
+import { site } from '../site.config';
+
+// Web3Forms posts cross-origin and redirects back with ?sent=1. No server, no
+// backend, host-agnostic — which keeps the site fully static on Cloudflare Pages.
+const sent = Astro.url.searchParams.get('sent') === '1';
+const redirect = new URL('/contact?sent=1', Astro.site ?? site.url).href;
+const configured = site.formKey.length > 0;
+---
+
+{
+  sent && (
+    <p class="sent" role="status">
+      Thanks — that's come through. I'll come back to you shortly.
+    </p>
+  )
+}
+
+<form action="https://api.web3forms.com/submit" method="POST">
+  <input type="hidden" name="access_key" value={site.formKey} />
+  <input type="hidden" name="redirect" value={redirect} />
+  <input type="hidden" name="subject" value={`New enquiry — ${site.name} ${site.discipline}`} />
+
+  <div class="field-row">
+    <div class="field">
+      <label for="name">Your name</label>
+      <input type="text" id="name" name="name" autocomplete="name" required />
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="email" required />
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="kind">What's it for</label>
+      <select id="kind" name="kind">
+        <option>Match day</option>
+        <option>Athletics meet</option>
+        <option>Gig or live music</option>
+        <option>Event</option>
+        <option>Something else</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="date">Date <span class="soft">(if known)</span></label>
+      <input type="date" id="date" name="date" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="message">Details</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="5"
+      placeholder="Where, what time, how many photos you're after…"></textarea>
+  </div>
+
+  {/* Honeypot: bots fill it, humans never see or tab to it. */}
+  <input class="hp" type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <button class="submit" type="submit" disabled={!configured}>Send enquiry</button>
+
+  {
+    !configured && (
+      <p class="form-note warn">
+        PUBLIC_WEB3FORMS_KEY is not set, so the form is disabled. Add it to .env
+        locally and to the Cloudflare Pages environment variables.
+      </p>
+    )
+  }
+</form>
+
+<style>
+  /* Underlined fields rather than boxes: boxes would be the only hard
+     rectangles on the site that aren't photographs. */
+  .field { position: relative; margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem); }
+
+  .field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .soft { text-transform: none; letter-spacing: 0; }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg);
+    font: inherit;
+    padding: 0.55rem 0;
+    border-radius: 0;
+    transition: border-color var(--t);
+  }
+  .field textarea { resize: vertical; min-height: 7rem; line-height: 1.6; }
+
+  .field select {
+    appearance: none;
+    cursor: pointer;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+      linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: right 0.75rem center, right 0.4rem center;
+    background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+    background-repeat: no-repeat;
+    padding-right: 1.75rem;
+  }
+  .field select option { background: var(--bg-raised); color: var(--fg); }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-bottom-color: var(--fg);
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+  @media (max-width: 32rem) {
+    .field-row { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  .hp { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+
+  .submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--fg);
+    color: var(--bg);
+    border: 1px solid var(--fg);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    transition: background var(--t), color var(--t);
+  }
+  .submit:hover:not(:disabled) { background: transparent; color: var(--fg); }
+  .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .form-note { font-size: 0.78rem; color: var(--muted); margin-top: 1.5rem; max-width: 46ch; }
+  .warn { color: #d9cfa8; }
+
+  .sent {
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--fg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+</style>

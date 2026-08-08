@@ -1,0 +1,22 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# working stock — full-size exports staged before curation.
+# Curated images live in src/assets/galleries/ and ARE committed.
+_source-photos/
+
+# environment
+.env
+.env.production
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# machine-local tool permissions, not project config
+.claude/settings.local.json

@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+import { findPhoto } from '../lib/gallery';
+import { Image } from 'astro:assets';
+
+const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
+---
+
+<Base title="About" description={site.description}>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="label">About</p>
+      <h1 class="display">{site.name}</h1>
+    </div>
+  </section>
+
+  <div class:list={['wrap', 'about-layout', { solo: !portrait }]}>
+    <div class="prose">
+      {/* The argument for hiring her — moved off the homepage, where it was
+          competing with the photographs, to where people actually read. */}
+      <p class="lede">
+        A corner is eleven players and one ball, spread across forty feet.
+        It has never fitted in a square.
+      </p>
+
+      <p>
+        Placeholder copy. Jess shoots grassroots football, athletics and live music
+        around Bristol and the South West — the kind of fixtures that rarely get a
+        photographer, for players and clubs who deserve better than a phone in the
+        stand.
+      </p>
+
+      <p>
+        Placeholder copy. Every match is shot on a Sony A6000 and edited the same
+        week. Full galleries go up on Flickr for players and families to browse and
+        download; this site is the selected edit.
+      </p>
+
+      <p>
+        Placeholder — rates, availability and what a typical match day covers.
+      </p>
+
+      <p><a class="link-out" href="/contact">Get in touch →</a></p>
+    </div>
+
+    {
+      portrait && (
+        <aside>
+          <Image
+            src={portrait.image}
+            alt={`${site.name}, photographer`}
+            widths={[600, 900, 1200]}
+            sizes="(max-width: 52rem) 100vw, min(40vw, 600px)"
+            loading="lazy"
+          />
+        </aside>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .page-head {
+    padding-top: clamp(4.5rem, 8vw, 6.5rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .page-head :global(.display) { font-size: clamp(2.2rem, 6vw, 4.5rem); }
+
+  .about-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: clamp(2.5rem, 7vw, 6rem);
+    align-items: start;
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  /* Single column on a phone, with the portrait lifted above the prose — a
+     photographer's About page shouldn't open with four paragraphs of text.
+     Safe to reorder visually: the aside holds no focusable elements, so tab
+     order is unaffected. */
+  @media (max-width: 52rem) {
+    .about-layout {
+      grid-template-columns: 1fr;
+      gap: clamp(1.75rem, 6vw, 2.5rem);
+    }
+    .about-layout aside { order: -1; }
+  }
+
+  /* No portrait yet: one measured column rather than a lopsided empty gap. */
+  .about-layout.solo { grid-template-columns: minmax(0, 1fr); }
+
+  .prose p { max-width: 56ch; }
+  .lede {
+    font-size: clamp(1.35rem, 2.9vw, 2.35rem);
+    font-weight: 300;
+    line-height: 1.32;
+    letter-spacing: -0.015em;
+    max-width: 24ch;
+    text-wrap: balance;
+    margin-top: 0;
+  }
+  .caption { font-size: 0.72rem; color: var(--muted); margin-top: 0.85rem; }
+</style>

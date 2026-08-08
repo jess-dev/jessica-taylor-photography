@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Jessica Taylor Photography — mockup</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="inner">
+
+<p class="mockup-note">Design mockup — placeholder wording. The form does not submit; Web3Forms is wired up at Step 3.</p>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="index.html">
+      Jessica Taylor
+      <span>Photography</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="gallery.html">Work</a>
+      <a href="index.html#about">About</a>
+      <a href="contact.html" aria-current="page">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-head">
+    <div class="wrap">
+      <p class="label">Enquiries</p>
+      <h1 class="display">Get in touch</h1>
+      <p>
+        Placeholder blurb. Match days, athletics meets, gigs and events across Bristol
+        and the South West. Tell me the date and what you need and I'll come back with
+        availability and a price.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap contact-layout">
+
+    <form>
+      <div class="field-row">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="kind">What's it for</label>
+          <select id="kind" name="kind">
+            <option>Match day</option>
+            <option>Athletics meet</option>
+            <option>Gig or live music</option>
+            <option>Event</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="date">Date <span style="text-transform:none;letter-spacing:0">(if known)</span></label>
+          <input type="date" id="date" name="date">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="message">Details</label>
+        <textarea id="message" name="message" rows="5"
+          placeholder="Where, what time, how many photos you're after…"></textarea>
+      </div>
+
+      <!-- Honeypot: no label, hidden off-screen, never focusable by a human. -->
+      <input class="hp" type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <button class="submit" type="button">Send enquiry</button>
+
+      <p class="form-note">
+        Placeholder — replies usually within a couple of days. No spam filter to get past,
+        it comes straight to my inbox.
+      </p>
+    </form>
+
+    <aside>
+      <div class="aside-block">
+        <p class="label">Email direct</p>
+        <p><a href="#">hello@jessicataylorphotography.co.uk</a></p>
+      </div>
+      <div class="aside-block">
+        <p class="label">Elsewhere</p>
+        <p>
+          <a href="https://www.instagram.com/jessica_taylor.photography/">Instagram</a><br>
+          <a href="https://www.flickr.com/photos/203458112@N05/">Flickr — full match galleries</a>
+        </p>
+      </div>
+      <div class="aside-block">
+        <p class="label">Based in</p>
+        <p>Bristol — travelling across the South West.</p>
+      </div>
+    </aside>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="colophon">© 2026 Jessica Taylor Photography</p>
+  </div>
+</footer>
+
+</body>
+</html>
