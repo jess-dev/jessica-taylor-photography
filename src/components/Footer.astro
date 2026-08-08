@@ -7,7 +7,13 @@ const year = new Date().getFullYear();
   <div class="wrap footer-grid">
     <div>
       <p class="label">Enquiries</p>
-      <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+      {
+        site.email ? (
+          <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        ) : (
+          <p><a href="/contact">Get in touch →</a></p>
+        )
+      }
     </div>
     <div class="footer-links">
       {site.socials.map((s) => <a href={s.href} rel="me noopener">{s.label}</a>)}

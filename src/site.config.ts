@@ -28,8 +28,15 @@ export const site = {
     'Sports and live music photographer based in Bristol, covering grassroots ' +
     'football, athletics and gigs across the South West.',
 
-  /** TODO: confirm with Jess — placeholder until the domain and mailbox exist. */
-  email: 'hello@jessicataylorphotography.co.uk',
+  /**
+   * Public enquiry address, printed in the footer and on the contact page.
+   *
+   * Null on purpose: enquiries arrive through the form, whose destination lives
+   * in the Web3Forms account rather than in the page source — so no personal
+   * address is published. Set this to 'hello@jessicataylorphotography.co.uk'
+   * once the Zoho mailbox exists.
+   */
+  email: null as string | null,
 
   location: {
     city: 'Bristol',

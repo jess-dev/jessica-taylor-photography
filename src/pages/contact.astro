@@ -24,10 +24,14 @@ import { site } from '../site.config';
     <ContactForm />
 
     <aside>
-      <div class="aside-block">
-        <p class="label">Email direct</p>
-        <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
-      </div>
+      {
+        site.email && (
+          <div class="aside-block">
+            <p class="label">Email direct</p>
+            <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+          </div>
+        )
+      }
       <div class="aside-block">
         <p class="label">Elsewhere</p>
         <p>
