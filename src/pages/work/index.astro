@@ -29,7 +29,7 @@ const cards = galleries.map((gallery) => ({
             const soon = gallery.data.draft || count === 0;
             const Tag = soon ? 'span' : 'a';
             return (
-              <Tag class:list={['genre', { soon }]} href={soon ? undefined : `/work/${gallery.id}`}>
+              <Tag class:list={['genre', { soon }]} href={soon ? undefined : `/work/${gallery.id}/`}>
                 {
                   cover && (
                     <Image

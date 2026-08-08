@@ -63,7 +63,7 @@ const cards = galleries.map((gallery) => ({
         <div class="wrap">
           <div class="section-head">
             <h2>Selected work</h2>
-            <a class="link-out" href="/work">All galleries</a>
+            <a class="link-out" href="/work/">All galleries</a>
           </div>
           <PhotoGrid photos={featured} meta={featuredMeta} target={3.4} numbered />
         </div>
@@ -82,7 +82,7 @@ const cards = galleries.map((gallery) => ({
             const soon = gallery.data.draft || !cover;
             const Tag = soon ? 'span' : 'a';
             return (
-              <Tag class:list={['genre', { soon }]} href={soon ? undefined : `/work/${gallery.id}`}>
+              <Tag class:list={['genre', { soon }]} href={soon ? undefined : `/work/${gallery.id}/`}>
                 {
                   cover && (
                     <Image

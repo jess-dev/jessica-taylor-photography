@@ -7,7 +7,15 @@ interface Props {
 }
 
 const { overlay = false } = Astro.props;
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+// Compare without trailing slashes so /work/ and /work/sport/ both mark Work
+// as current, whichever way the link was written.
+const strip = (s: string) => s.replace(/\/+$/, '') || '/';
+const path = strip(Astro.url.pathname);
+const isCurrent = (href: string) => {
+  const target = strip(href);
+  return target !== '/' && (path === target || path.startsWith(`${target}/`));
+};
 ---
 
 <header class:list={['site-header', { overlay }]}>
@@ -19,7 +27,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     <nav class="nav" aria-label="Primary">
       {
         site.nav.map((item) => (
-          <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
             {item.label}
           </a>
         ))

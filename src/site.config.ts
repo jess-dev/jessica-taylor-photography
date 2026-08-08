@@ -57,10 +57,12 @@ export const site = {
     },
   ] satisfies SocialLink[],
 
+  /* Trailing slashes are deliberate: the build is directory-format, so /work
+     301s to /work/. Linking without the slash costs a round trip per click. */
   nav: [
-    { label: 'Work', href: '/work' },
-    { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Work', href: '/work/' },
+    { label: 'About', href: '/about/' },
+    { label: 'Contact', href: '/contact/' },
   ],
 
   /**

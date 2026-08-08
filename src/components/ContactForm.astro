@@ -4,7 +4,7 @@ import { site } from '../site.config';
 // Web3Forms posts cross-origin and redirects back with ?sent=1. No server, no
 // backend, host-agnostic — which keeps the site fully static on Cloudflare Pages.
 const sent = Astro.url.searchParams.get('sent') === '1';
-const redirect = new URL('/contact?sent=1', Astro.site ?? site.url).href;
+const redirect = new URL('/contact/?sent=1', Astro.site ?? site.url).href;
 const configured = site.formKey.length > 0;
 ---
 
