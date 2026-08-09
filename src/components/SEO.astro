@@ -12,14 +12,14 @@ interface Props {
 
 const { title, description, image, profile = false } = Astro.props;
 
-const fullTitle = title ? `${title} — ${site.name} ${site.discipline}` : `${site.name} ${site.discipline}`;
+const fullTitle = title ? `${title} · ${site.name} ${site.discipline}` : `${site.name} ${site.discipline}`;
 const desc = description ?? site.description;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
 const ogImage = image ? new URL(image, Astro.site ?? site.url) : undefined;
 
 /**
- * This is what makes "sports photographer Bristol" searches surface the site —
- * it matters more than usual because the homepage carries very little prose.
+ * Person + ProfilePage JSON-LD. Carries more weight than usual here because
+ * the homepage has very little prose for a crawler to read.
  */
 const jsonLd = {
   '@context': 'https://schema.org',

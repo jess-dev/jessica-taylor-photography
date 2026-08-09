@@ -8,13 +8,13 @@ interface Props {
   meta?: Record<string, { caption?: string; focal?: string }>;
   /** Wrap each photo in a button that opens the Lightbox. */
   lightbox?: boolean;
-  /** Ratios sum per row — lower packs fewer, larger frames per row. */
+  /** Ratios sum per row. Lower packs fewer, larger frames per row. */
   target?: number;
   /** Numbered captions, as on the gallery pages. */
   numbered?: boolean;
   /**
    * How many leading photos load eagerly. Lazy-loading images that are already
-   * on screen just delays them — these are the ones the browser should fetch
+   * on screen just delays them; these are the ones the browser should fetch
    * straight away. Roughly one row's worth.
    */
   eager?: number;

@@ -25,10 +25,13 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
+  /* Tighter than the content sections on purpose. Generous whitespace earns its
+     place between photographs; around two lines of small print it just reads as
+     a gap where something failed to load. */
   .site-footer {
     border-top: 1px solid var(--line);
-    padding-block: clamp(3rem, 7vw, 5.5rem);
-    margin-top: clamp(3rem, 8vw, 7rem);
+    padding-block: clamp(2rem, 3.5vw, 3rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
   }
   .footer-grid {
     display: flex;
@@ -43,12 +46,15 @@ const year = new Date().getFullYear();
   .footer-links {
     display: flex;
     flex-wrap: wrap;
+    /* Without this the links stretch to the height of the taller Enquiries
+       column and their underlines detach, drawing 40px below the text. */
+    align-items: flex-start;
     gap: 1.5rem;
     font-size: 0.78rem;
   }
   .colophon {
     font-size: 0.72rem;
     color: var(--muted);
-    margin-top: 3rem;
+    margin-top: 1.75rem;
   }
 </style>

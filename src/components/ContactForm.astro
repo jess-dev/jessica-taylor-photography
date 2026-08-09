@@ -1,8 +1,8 @@
 ---
 import { site } from '../site.config';
 
-// Web3Forms posts cross-origin and redirects back with ?sent=1. No server, no
-// backend, host-agnostic — which keeps the site fully static on Cloudflare Pages.
+// Web3Forms posts cross-origin and redirects back with ?sent=1, which keeps
+// the site fully static.
 //
 // The confirmation must be revealed client-side: this page is prerendered, so
 // there is no request at build time and Astro.url carries no query string.
@@ -11,14 +11,14 @@ const configured = site.formKey.length > 0;
 ---
 
 <div class="sent" id="form-sent" role="status" tabindex="-1" hidden>
-  <strong>Thanks — that's come through.</strong>
+  <strong>Thanks, that's come through.</strong>
   <p>I'll come back to you shortly with availability and a price.</p>
 </div>
 
 <form action="https://api.web3forms.com/submit" method="POST" id="enquiry-form">
   <input type="hidden" name="access_key" value={site.formKey} />
   <input type="hidden" name="redirect" value={redirect} />
-  <input type="hidden" name="subject" value={`New enquiry — ${site.name} ${site.discipline}`} />
+  <input type="hidden" name="subject" value={`New enquiry: ${site.name} ${site.discipline}`} />
 
   <div class="field-row">
     <div class="field">
@@ -94,8 +94,8 @@ const configured = site.formKey.length > 0;
 </script>
 
 <style>
-  /* Underlined fields rather than boxes: boxes would be the only hard
-     rectangles on the site that aren't photographs. */
+  /* Underlined fields rather than boxes: the only hard rectangles on the
+     site should be photographs. */
   .field { position: relative; margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem); }
 
   .field label {

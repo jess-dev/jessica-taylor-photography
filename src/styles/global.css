@@ -1,9 +1,8 @@
 /* ==========================================================================
    Design tokens and base styles.
 
-   This block IS the visual identity — reskinning the site for another
-   photographer should mean editing :root and nothing else.
-   Ported from the approved Step 1 mockup.
+   :root carries the visual identity: a reskin should mean editing these
+   custom properties and nothing else.
    ========================================================================== */
 
 :root {
@@ -40,7 +39,7 @@ body {
 
 /* height:auto is load-bearing: Astro writes real width/height attributes onto
    every <img>, so without it max-width shrinks the width while the height
-   attribute holds — and the photograph stretches. */
+   attribute holds, and the photograph stretches. */
 img {
   display: block;
   max-width: 100%;

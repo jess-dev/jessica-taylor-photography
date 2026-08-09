@@ -4,7 +4,7 @@ import type { Photo } from '../lib/gallery';
 
 interface Props {
   desktop: Photo;
-  /** Portrait frame served to phones. Not a crop — a different photograph. */
+  /** Portrait frame served to phones. Not a crop, a different photograph. */
   mobile?: Photo;
   /** object-position for the desktop crop, e.g. '35% 40%'. */
   focal?: string;
@@ -115,7 +115,7 @@ const mobileRatio = mobile ? `${mobile.image.width} / ${mobile.image.height}` : 
   .hero-copy :global(.label) { margin-bottom: 1rem; }
 
   /* A portrait frame is served here, so the hero stays tall and keeps its
-     overlaid copy. The container matches the source ratio — never cropped. */
+     overlaid copy. The container matches the source ratio, never cropped. */
   @media (max-width: 40rem) {
     .hero-media {
       height: auto;

@@ -5,6 +5,7 @@ import { findPhoto } from '../lib/gallery';
 import { Image } from 'astro:assets';
 
 const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
+const band = site.aboutImage ? findPhoto(site.aboutImage.src) : undefined;
 ---
 
 <Base title="About" description={site.description}>
@@ -15,33 +16,53 @@ const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
     </div>
   </section>
 
-  <div class:list={['wrap', 'about-layout', { solo: !portrait }]}>
+  <div class:list={['wrap', 'about-layout', 'about-top', { solo: !portrait }]}>
     <div class="prose">
-      {/* The argument for hiring her — moved off the homepage, where it was
-          competing with the photographs, to where people actually read. */}
       <p class="lede">
-        A corner is eleven players and one ball, spread across forty feet.
-        It has never fitted in a square.
+        I still play football every week. The camera is my plan for the day my
+        knees decide I can't.
       </p>
 
       <p>
-        Placeholder copy. Jess shoots grassroots football, athletics and live music
-        around Bristol and the South West — the kind of fixtures that rarely get a
-        photographer, for players and clubs who deserve better than a phone in the
-        stand.
+        Almost everyone I know I met through the game. Coaching was the obvious
+        way to stay involved, but I like having a small car, and coaches seem to
+        own a van's worth of kit.
       </p>
 
       <p>
-        Placeholder copy. Every match is shot on a Sony A6000 and edited the same
-        week. Full galleries go up on Flickr for players and families to browse and
-        download; this site is the selected edit.
+        It turns out that catching a save at full stretch makes me exactly as happy
+        as making one did.
       </p>
 
       <p>
-        Placeholder — rates, availability and what a typical match day covers.
+        That's the useful part, professionally. I've played the pass, so I know
+        where it's going. I know a save is coming before the shot leaves the boot,
+        and I'm already on it. It's the difference between reacting and
+        anticipating, and it's most of why these frames are sharp.
       </p>
 
-      <p><a class="link-out" href="/contact/">Get in touch →</a></p>
+      <p>
+        Most of what I've shot so far is the Bristol women's casual league. My own
+        team, their development side, and whoever's playing on the next pitch. I go
+        for the action: the tackle, the save, the half-second after a goal goes in.
+        Players rarely get to see themselves properly at this level, and I think
+        they should.
+      </p>
+
+      <p>
+        <strong>Gigs came from a lens.</strong> I bought something fast for
+        badly-lit indoor sport and found it was just as happy in a dark venue. I've
+        played guitar since I was a teenager, so I already knew what I was looking
+        for. A performance gives you the same thing a match does. Someone completely
+        absorbed in what they're doing, and a moment that's gone in a tenth of a
+        second.
+      </p>
+
+      <p>
+        The rest of the time I'm walking round Bristol with headphones in, seeing if
+        anything catches my eye. That one isn't a service. I just love taking
+        photographs.
+      </p>
     </div>
 
     {
@@ -57,6 +78,37 @@ const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
         </aside>
       )
     }
+  </div>
+
+  {
+    band && site.aboutImage && (
+      <figure class="band" style={`--focal: ${site.aboutImage.focal};`}>
+        <Image
+          src={band.image}
+          alt={site.aboutImage.alt}
+          widths={[960, 1440, 1920, 2560]}
+          sizes="100vw"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    )
+  }
+
+  <div class:list={['wrap', 'about-layout', 'solo', 'about-rest', { divided: !band }]}>
+    <div class="prose">
+      <div class="details">
+        <p class="label">A match day</p>
+        <ul>
+          <li>Warmups and both halves, pitch-side.</li>
+          <li>10–20 edited frames within 24 hours, sized for socials.</li>
+          <li>A full album of around 50 within the week.</li>
+          <li>Everyone in the photographs gets the full-size file, free. No watermarks.</li>
+        </ul>
+      </div>
+
+      <p><a class="link-out" href="/contact/">Get in touch →</a></p>
+    </div>
   </div>
 </Base>
 
@@ -75,10 +127,9 @@ const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
     align-items: start;
     padding-block: clamp(3rem, 7vw, 5.5rem);
   }
-  /* Single column on a phone, with the portrait lifted above the prose — a
-     photographer's About page shouldn't open with four paragraphs of text.
-     Safe to reorder visually: the aside holds no focusable elements, so tab
-     order is unaffected. */
+  /* Single column on a phone, portrait above the prose. Safe to reorder
+     visually: the aside holds no focusable elements, so tab order is
+     unaffected. */
   @media (max-width: 52rem) {
     .about-layout {
       grid-template-columns: 1fr;
@@ -87,8 +138,32 @@ const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
     .about-layout aside { order: -1; }
   }
 
-  /* No portrait yet: one measured column rather than a lopsided empty gap. */
+  /* One measured column, centred. Left-aligned it reads as a page whose
+     image failed to load. */
   .about-layout.solo { grid-template-columns: minmax(0, 1fr); }
+  /* width:100% is load-bearing: with auto margins the grid item stops
+     stretching and shrink-to-fits, so blocks either side of the band resolve
+     to different widths. */
+  .about-layout.solo .prose {
+    width: 100%;
+    max-width: 60ch;
+    margin-inline: auto;
+  }
+
+  /* The band supplies the space between the two blocks. */
+  .about-top { padding-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .about-rest { padding-top: clamp(2rem, 5vw, 3.5rem); }
+
+  .band {
+    margin: 0;
+    height: clamp(18rem, 46vw, 34rem);
+  }
+  .band :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, 50% 50%);
+  }
 
   .prose p { max-width: 56ch; }
   .lede {
@@ -96,9 +171,28 @@ const portrait = site.portrait ? findPhoto(site.portrait) : undefined;
     font-weight: 300;
     line-height: 1.32;
     letter-spacing: -0.015em;
-    max-width: 24ch;
+    max-width: 28ch;
     text-wrap: balance;
     margin-top: 0;
   }
-  .caption { font-size: 0.72rem; color: var(--muted); margin-top: 0.85rem; }
+  /* Set apart from the prose: this is the block that gets scanned. */
+  .details {
+    max-width: 56ch;
+    margin-block: 0 clamp(2rem, 5vw, 3rem);
+  }
+  /* Only without a band: the photograph is otherwise the divider. */
+  .divided .details {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .details li {
+    padding-block: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .details li:last-child { border-bottom: 0; }
 </style>

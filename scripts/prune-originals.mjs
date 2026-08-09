@@ -3,7 +3,7 @@
  *
  * `import.meta.glob(..., { eager: true })` in src/lib/gallery.ts imports every
  * curated photo so Astro has its width/height at build time. Vite emits each
- * imported asset into dist/_astro whether or not the original is ever served —
+ * imported asset into dist/_astro whether or not the original is ever served,
  * which for a photography site means tens of megabytes of full-resolution JPEG
  * shipped alongside the optimised AVIF/WebP that visitors actually receive.
  *

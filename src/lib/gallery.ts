@@ -3,7 +3,7 @@ import type { ImageMetadata } from 'astro';
 /**
  * Every curated image, eagerly imported so Astro has the ImageMetadata
  * (width/height) it needs to reserve aspect ratios and generate srcsets at
- * build time. The glob pattern must be a literal — Vite resolves it statically.
+ * build time. The glob pattern must be a literal: Vite resolves it statically.
  */
 const files = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/galleries/**/*.{jpg,jpeg,png,JPG,JPEG,PNG}',
@@ -11,7 +11,7 @@ const files = import.meta.glob<{ default: ImageMetadata }>(
 );
 
 export interface Photo {
-  /** Filename, e.g. 'CheddarVsBath22ndFeb-12.jpg' — the key used in frontmatter. */
+  /** Filename, e.g. 'CheddarVsBath22ndFeb-12.jpg', the key used in frontmatter. */
   name: string;
   image: ImageMetadata;
   /** width / height. 1.5 is 3:2 landscape, 0.8 is 4:5 portrait. */
@@ -46,7 +46,7 @@ export function findPhoto(ref: string): Photo | undefined {
  * Pack photos into justified rows.
  *
  * Within a row each photo's flex-grow is its aspect ratio, so widths come out
- * proportional to shape and every height resolves to the same value — aligned
+ * proportional to shape and every height resolves to the same value, aligned
  * rows with no cropping. A row closes once its ratios sum past `target`, so
  * wide frames naturally sit fewer-to-a-row than portraits do.
  *

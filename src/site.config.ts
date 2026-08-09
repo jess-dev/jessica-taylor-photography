@@ -1,10 +1,6 @@
 /**
- * Every piece of site identity lives here.
- *
- * Components must never hardcode a name, address or URL — they read from this
- * object. That keeps the door open to reusing the whole site as a template for
- * another photographer: change this file, swap the images, adjust the tokens in
- * styles/global.css, and nothing else needs touching.
+ * Site identity. Components read from this object rather than hardcoding a
+ * name, address or URL, so this file plus styles/global.css covers a rebrand.
  */
 
 export interface SocialLink {
@@ -23,24 +19,20 @@ export const site = {
   url: 'https://jessicataylorphotography.co.uk',
 
   /** Shown under the hero and used as the default meta description. */
-  tagline: 'Sports photography — Bristol',
+  tagline: 'Football and live music, Bristol',
   description:
-    'Sports and live music photographer based in Bristol, covering grassroots ' +
-    'football, athletics and gigs across the South West.',
+    'Football and live music photographer in Bristol. Grassroots match days, ' +
+    'athletics and gigs across the South West, shot by someone who plays.',
 
   /**
-   * Public enquiry address, printed in the footer and on the contact page.
-   *
-   * Null on purpose: enquiries arrive through the form, whose destination lives
-   * in the Web3Forms account rather than in the page source — so no personal
-   * address is published. Set this to 'hello@jessicataylorphotography.co.uk'
-   * once the Zoho mailbox exists.
+   * Public enquiry address for the footer and contact page. Null routes
+   * enquiries through the form instead, keeping no address in the page source.
    */
   email: null as string | null,
 
   location: {
     city: 'Bristol',
-    region: 'South West England',
+    region: 'South West of England',
     country: 'GB',
   },
 
@@ -51,14 +43,14 @@ export const site = {
       sameAs: true,
     },
     {
-      label: 'Flickr — full match galleries',
+      label: 'Flickr, full galleries',
       href: 'https://www.flickr.com/photos/203458112@N05/',
       sameAs: true,
     },
   ] satisfies SocialLink[],
 
-  /* Trailing slashes are deliberate: the build is directory-format, so /work
-     301s to /work/. Linking without the slash costs a round trip per click. */
+  /* Trailing slashes are deliberate: directory-format output means /work
+     301s to /work/, costing a round trip per click. */
   nav: [
     { label: 'Work', href: '/work/' },
     { label: 'About', href: '/about/' },
@@ -67,24 +59,25 @@ export const site = {
 
   /**
    * About page portrait, referenced as '<gallery-slug>/<filename>'.
-   * Null until a real photograph of Jess working exists — the page drops to a
-   * single prose column rather than standing in a football frame for a person.
+   * Null renders a single prose column instead of the side-by-side layout.
    */
   portrait: null as string | null,
 
+  /** Full-bleed band on the About page. Null omits it. */
+  aboutImage: null as { src: string; focal: string; alt: string } | null,
+
   /**
-   * Homepage hero. Two separate photographs chosen for their shape, not one
-   * image cropped twice — a wide frame owns the desktop, a portrait frame fills
-   * a phone. Referenced as '<gallery-slug>/<filename>'.
+   * Homepage hero. Two photographs rather than one crop: a wide frame for
+   * desktop, a portrait frame for phones. '<gallery-slug>/<filename>'.
    */
   hero: {
     desktop: 'sport/CheddarVsBath22ndFeb-12.jpg',
     mobile: 'sport/BristolRun-8.jpg',
     focal: '35% 40%',
-    headline: 'The whole picture.',
-    alt:
-      'A player rises to meet the ball at a corner as defenders and the ' +
-      'goalkeeper converge on the six-yard box',
+    headline: 'Gone in a tenth of a second.',
+    /* <picture> carries one alt, and the two frames differ, so this has to
+       describe both. */
+    alt: 'Grassroots sport in and around Bristol',
   },
 
   /**
